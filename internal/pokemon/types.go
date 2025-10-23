@@ -7,6 +7,12 @@ type Pokemon struct {
 	Weight         int    `json:"weight"`
 	Stats          []Stat `json:"stats"`
 	Types          []Type `json:"types"`
+	Sprites        struct {
+		FrontDefault string `json:"front_default"`
+		FrontShiny   string `json:"front_shiny"`
+		BackDefault  string `json:"back_default"`
+		BackShiny    string `json:"back_shiny"`
+	} `json:"sprites"`
 }
 
 type Stat struct {

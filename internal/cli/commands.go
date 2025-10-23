@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"os"
 
+	"github.com/ethan-mdev/pokemon-cli/internal/display"
 	"github.com/ethan-mdev/pokemon-cli/internal/locations"
 	"github.com/ethan-mdev/pokemon-cli/internal/pokemon"
 	"github.com/ethan-mdev/pokemon-cli/internal/user"
@@ -62,6 +63,12 @@ func init() {
 			description: "Displays all caught pokemon",
 			parameters:  []string{},
 			callback:    commandPokedex,
+		},
+		"image": {
+			name:        "image",
+			description: "Displays an image of a caught pokemon",
+			parameters:  []string{"pokemon"},
+			callback:    commandImage,
 		},
 	}
 }
@@ -215,4 +222,22 @@ func commandPokedex(cfg *config, args []string) error {
 		fmt.Printf(" - %s\n", name)
 	}
 	return nil
+}
+
+// Displays an image of a caught pokemon
+func commandImage(cfg *config, args []string) error {
+	if len(args) < 1 {
+		return fmt.Errorf("usage: image <pokemon>")
+	}
+	pokemonName := args[0]
+	if cfg.pokedex == nil {
+		return fmt.Errorf("you haven't caught any pokemon yet")
+	}
+	pokemonData, found := cfg.pokedex.CaughtPokemon[pokemonName]
+	if !found {
+		return fmt.Errorf("pokemon %s not found in your pokedex", pokemonName)
+	}
+
+	fmt.Printf("Displaying %s:\n", pokemonName)
+	return display.DisplayImage(pokemonData.Sprites.FrontDefault)
 }
