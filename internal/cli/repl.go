@@ -7,7 +7,9 @@ import (
 	"strings"
 )
 
+// Starts the REPL for the Pokemon CLI
 func Start() {
+	cfg := &config{}
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -18,8 +20,11 @@ func Start() {
 			continue
 		}
 
-		if cmd, exists := commands[input[0]]; exists {
-			if err := cmd.callback(); err != nil {
+		command := input[0]
+		args := input[1:]
+
+		if cmd, exists := commands[command]; exists {
+			if err := cmd.callback(cfg, args); err != nil {
 				fmt.Printf("Error: %v\n", err)
 			}
 		} else {
@@ -28,6 +33,7 @@ func Start() {
 	}
 }
 
+// Cleans and splits input text into lowercase words
 func cleanInput(text string) []string {
 	lowercase := strings.ToLower(text)
 	words := strings.Fields(lowercase)
