@@ -1,17 +1,14 @@
 package locations
 
 type LocationArea struct {
-	Name string `json:"name"`
+	Name              string             `json:"name"`
+	PokemonEncounters []PokemonEncounter `json:"pokemon_encounters"`
 }
 
 type PokemonEncounter struct {
 	Pokemon struct {
 		Name string `json:"name"`
-	}
-}
-
-type ExploreResponse struct {
-	PokemonEncounters []PokemonEncounter `json:"pokemon_encounters"`
+	} `json:"pokemon"`
 }
 
 type LocationResponse struct {

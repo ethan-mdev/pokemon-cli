@@ -52,7 +52,7 @@ func GetPokemonInLocationArea(url string) ([]string, error) {
 	// Check cache first
 	cachedArea, found := cache.Get(url)
 	if found {
-		var cachedResponse ExploreResponse
+		var cachedResponse LocationArea
 		if err := json.Unmarshal(cachedArea, &cachedResponse); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal cached location area: %v", err)
 		}
@@ -69,20 +69,20 @@ func GetPokemonInLocationArea(url string) ([]string, error) {
 	}
 	defer resp.Body.Close()
 
-	var exploreResponse ExploreResponse
-	if err := json.NewDecoder(resp.Body).Decode(&exploreResponse); err != nil {
-		return nil, fmt.Errorf("failed to decode location area response: %v", err)
+	var locationArea LocationArea
+	if err := json.NewDecoder(resp.Body).Decode(&locationArea); err != nil {
+		return nil, fmt.Errorf("failed to decode location area: %v", err)
 	}
 
 	// Cache the results
-	resultsJSON, err := json.Marshal(exploreResponse)
+	resultsJSON, err := json.Marshal(locationArea)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal location area response: %v", err)
 	}
 	cache.Add(url, resultsJSON)
 
 	var pokemonNames []string
-	for _, encounter := range exploreResponse.PokemonEncounters {
+	for _, encounter := range locationArea.PokemonEncounters {
 		pokemonNames = append(pokemonNames, encounter.Pokemon.Name)
 	}
 

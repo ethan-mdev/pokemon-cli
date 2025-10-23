@@ -6,7 +6,7 @@ import (
 	"github.com/TheZoraiz/ascii-image-converter/aic_package"
 )
 
-// DisplayImage fetches and displays a Pokemon sprite as ASCII art
+// DisplayImage displays an image as ASCII art
 func DisplayImage(url string) error {
 	if url == "" {
 		return fmt.Errorf("no image URL provided")
