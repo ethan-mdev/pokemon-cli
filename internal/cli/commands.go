@@ -51,6 +51,18 @@ func init() {
 			parameters:  []string{"pokemon"},
 			callback:    commandCatch,
 		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspects a caught pokemon",
+			parameters:  []string{"pokemon"},
+			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Displays all caught pokemon",
+			parameters:  []string{},
+			callback:    commandPokedex,
+		},
 	}
 }
 
@@ -158,5 +170,49 @@ func commandCatch(cfg *config, args []string) error {
 	cfg.pokedex.CaughtPokemon[pokemonName] = pokemonData
 	fmt.Printf("Congratulations! You caught %s!\n", pokemonName)
 
+	return nil
+}
+
+// Inspects a caught pokemon
+func commandInspect(cfg *config, args []string) error {
+	if len(args) < 1 {
+		return fmt.Errorf("usage: inspect <pokemon>")
+	}
+	pokemonName := args[0]
+
+	if cfg.pokedex == nil {
+		return fmt.Errorf("you haven't caught any pokemon yet")
+	}
+
+	pokemonData, found := cfg.pokedex.CaughtPokemon[pokemonName]
+	if !found {
+		return fmt.Errorf("pokemon %s not found in your pokedex", pokemonName)
+	}
+
+	fmt.Printf("Name: %s\n", pokemonName)
+	fmt.Printf("Height: %d\n", pokemonData.Height)
+	fmt.Printf("Weight: %d\n", pokemonData.Weight)
+	fmt.Println("Stats:")
+	for _, stat := range pokemonData.Stats {
+		fmt.Printf(" - %s: %d\n", stat.Stat.Name, stat.BaseStat)
+	}
+	fmt.Println("Types:")
+	for _, t := range pokemonData.Types {
+		fmt.Printf(" - %s\n", t.Type.Name)
+	}
+
+	return nil
+}
+
+// Displays all caught pokemon
+func commandPokedex(cfg *config, args []string) error {
+	if cfg.pokedex == nil || len(cfg.pokedex.CaughtPokemon) == 0 {
+		fmt.Println("Your pokedex is empty. Catch some pokemon!")
+		return nil
+	}
+	fmt.Println("Caught Pokemon:")
+	for name := range cfg.pokedex.CaughtPokemon {
+		fmt.Printf(" - %s\n", name)
+	}
 	return nil
 }
